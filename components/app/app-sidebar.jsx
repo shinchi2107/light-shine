@@ -8,14 +8,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import menus from "@/constants/menu";
+import { home_header_menus } from "@/constants/menu";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
 import { ChevronDown } from "lucide-react";
 const AppSidebar = ({ className, position }) => {
     return (
         <Sidebar className={className} side={position}>
             <SidebarContent>
-            {menus.map((item) => (
+            {home_header_menus.map((item) => (
                 <Collapsible className="group/collapsible" key={item.title}>
                     <SidebarGroup>
                         <SidebarGroupContent>

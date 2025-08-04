@@ -57,4 +57,61 @@ const product_populars = [
     },
 ]
 
-export { product_populars };
+const product_recommends = [
+    {
+        title: "Tuna Roast Source",
+        description: "With a seemingly infinite number of organic varieties on offer.",
+        image_first: "/product/product_item_4.webp",
+        image_second: "/product/product_item_4_v2.webp",
+        compare_price: 349,
+        price: 349,
+        tags: ["Dinning", "Food"]
+    },
+    {
+        title: "Tuna Roast Source",
+        description: "With a seemingly infinite number of organic varieties on offer.",
+        image_first: "/product/product_item_9.webp",
+        image_second: "/product/product_item_9_v2.webp",
+        compare_price: 356,
+        price: 356,
+        tags: ["Classics", "Restaurant"]
+    },
+    {
+        title: "Chicken Nuggets Filled With Cream Ham Served With Pineapple",
+        description: "With a seemingly infinite number of organic varieties on offer.",
+        image_first: "/product/product_item_17.webp",
+        image_second: "/product/product_item_17_v2.webp",
+        compare_price: 349,
+        price: 349,
+        tags: ["Food"]
+    },
+    {
+        title: "Beef Meat Steak",
+        description: "With a seemingly infinite number of organic varieties on offer.",
+        image_first: "/product/product_item_15.webp",
+        image_second: "",
+        compare_price: 360,
+        price: 356,
+        tags: ["Dinning", "Food"]
+    },
+    {
+        title: "Beef Meat Steak",
+        description: "With a seemingly infinite number of organic varieties",
+        image_first: "/product/product_item_12.webp",
+        image_second: "",
+        compare_price: 375,
+        price: 356,
+        tags: ["Classics", "Restaurant"]
+    },
+    {
+        title: "Spaghetti Pasta",
+        description: "With a seemingly infinite number of organic varieties on offer.",
+        image_first: "/product/product_item_6.webp",
+        image_second: "",
+        compare_price: 349,
+        price: 349,
+        tags: ["Dinning", "Food"]
+    }
+]
+
+export { product_populars, product_recommends };

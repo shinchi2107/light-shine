@@ -1,29 +1,21 @@
-import { Mulish, Baloo_2 } from "next/font/google";
-import Link from "next/link"
+import { Montserrat, Baloo_2, Shippori_Mincho } from "next/font/google";
 import "./globals.css";
-
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuTrigger
-} from "@/components/ui/navigation-menu"
-import Image from "next/image";
-import menus from "@/constants/menu";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import AppSidebar from "@/components/app/app-sidebar";
-import { MenuIcon } from "lucide-react";
-import ContainerWrapper from "@/components/common/container-wrapper";
-
-const mulish = Mulish({
-  variable: "--font-mulish",
-  subsets: ["latin"],
-});
 
 const baloo_2 = Baloo_2({
   variable: "--font-baloo_2",
   subsets: ["latin"],
+});
+
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
+
+const shippori_mincho = Shippori_Mincho({
+  variable: "--font-shippori_mincho",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata = {
@@ -35,46 +27,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${mulish.variable} ${baloo_2.variable} antialiased overflow-x-hidden`}
+        className={`${montserrat.variable} ${baloo_2.variable} ${shippori_mincho.variable} antialiased bg-[#0e1618]`}
       >
-        <SidebarProvider className="min-h-auto">
-          <AppSidebar className="block md:hidden" position="right" />
-          <ContainerWrapper className="px-4 py-3">
-            <div className="flex justify-between md:justify-center items-center gap-4">
-              <div className="header__logo w-[100px] md:w-[200px]">
-                <Image src="/logo/logo-header.png" width={200} height={200} alt="logo-header" />
-              </div>
-              <NavigationMenu viewport={false} className="hidden md:block">
-                <NavigationMenuList className="flex-wrap justify-start">
-                  {menus.map((item, index) => (
-                    <NavigationMenuItem key={index}>
-                      <NavigationMenuTrigger is_submenu={item.sub_menu.length > 0} className="cursor-pointer">{item.title}</NavigationMenuTrigger>
-                      {item.sub_menu.length > 0 && (
-                        <NavigationMenuContent className="z-50">
-                          <ul className="grid w-[200px] gap-4">
-                            {item.sub_menu.map((sub_item) => (
-                              <li className="cursor-pointer py-2 px-2 hover:bg-gray-100 transition-all duration-300 rounded-md" key={sub_item.title}>
-                                <Link href={sub_item.href}>
-                                  <div className="text-sm leading-none font-medium">{sub_item.title}</div>
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </NavigationMenuContent>
-                      )}
-                    </NavigationMenuItem>
-                  ))}
-
-                </NavigationMenuList>
-              </NavigationMenu>
-              <div className="flex block md:hidden">
-                <div className="menu-bar">
-                  <SidebarTrigger className="cursor-pointer" icon={<MenuIcon />} />
-                </div>
-              </div>
-            </div>
-          </ContainerWrapper>
-        </SidebarProvider>
         <main>
           {children}
         </main>

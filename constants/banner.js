@@ -1,31 +1,22 @@
 const banner_carousel = [
     {
         id: 1,
-        title_btn: "Xem chi tiết",
-        link_btn: "/tra-sua-tocotoco-khuyen-mai-he",
+        title_btn: "See details",
+        link_btn: "/#",
         image: {
-            src: "/banner/banner-web.jpg",
-            alt: "banner-web",
+            src: "/banner/home-slide-show-banner.webp",
+            alt: "home-slide-show-banner",
         }
     },
     {
         id: 2,
-        title_btn: "Đặt hàng ngay",
+        title_btn: "See details",
         link_btn: "/tra-sua-tocotoco-khuyen-mai-he",
         image: {
-            src: "/banner/ngay-gia-dinh-banner-web.jpg",
-            alt: "ngay-gia-dinh-banner-web",
+            src: "/banner/home-slide-show-banner-2.webp",
+            alt: "home-slide-show-banner-2",
         }
-    },
-    {
-        id: 3,
-        title_btn: "Đặt hàng ngay",
-        link_btn: "/tra-sua-tocotoco-khuyen-mai-he",
-        image: {
-            src: "/banner/tra_sua_tocotoco_khuyen_mai_he.jpg",
-            alt: "tra-sua-tocotoco-khuyen-mai-he",
-        }
-    },
+    }
 ]
 
 export { banner_carousel };
