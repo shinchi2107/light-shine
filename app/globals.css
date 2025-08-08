@@ -80,6 +80,11 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
   --color-primary: #f2b612;
+  --color-accent-1: #ffffff;
+  --color-accent-2: #5c5c5c;
+  --color-accent-3: #a9a8a7;
+  --color-accent-4: #eae7e5;
+  --color-accent-5: #f5f5f3;
 }
 
 .dark {

@@ -1,20 +1,23 @@
-import AppCarousel from "@/components/app/app-carousel";
-import { CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { banner_carousel } from "@/constants/banner";
+import AppCarousel from "@/src/components/app/app-carousel";
+import { CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/src/components/ui/carousel";
+import { banner_carousel } from "@/src/constants/banner";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./ui/home.module.css";
-import HeaderHome from "@/components/layout/home/header-home";
-import FooterHome from "@/components/layout/home/footer-home";
-import ContainerWrapper from "@/components/common/container-wrapper";
-import WelcomeBanner from "@/components/banner/welcome-banner";
-import TextBanner from "@/components/banner/text-banner";
-import ImageWithTextBanner from "@/components/banner/image-with-text-banner";
-import HomeSpecialMenu from "@/components/pages/home/home-special-menu";
-import StairScrollCount from "@/components/count/stair-scroll-count";
-import ProductRecommend from "@/components/product/product-recommend";
-import VideoBanner from "@/components/video/video-banner";
-import HomeBlogSpecial from "@/components/pages/home/home-blog-special";
+import HeaderHome from "@/src/components/layout/home/header-home";
+import FooterHome from "@/src/components/layout/home/footer-home";
+import ContainerWrapper from "@/src/components/common/container-wrapper";
+import WelcomeBanner from "@/src/components/banner/welcome-banner";
+import TextBanner from "@/src/components/banner/text-banner";
+import ImageWithTextBanner from "@/src/components/banner/image-with-text-banner";
+import HomeSpecialMenu from "@/src/components/pages/home/home-special-menu";
+import StairScrollCount from "@/src/components/count/stair-scroll-count";
+import ProductRecommend from "@/src/components/product/product-recommend";
+import VideoBanner from "@/src/components/video/video-banner";
+import HomeBlogSpecial from "@/src/components/pages/home/home-blog-special";
+import ContactFormTable from "@/src/components/contacts/contact-form-table";
+import BlogPost from "@/src/components/blog/blog-post";
+import ArrowRightIcon from "@/src/components/icon/ArrowRightIcon";
 export default function Home() {
   return (
     <>
@@ -27,7 +30,10 @@ export default function Home() {
                 <Image className="w-full h-full object-cover" src={item.image.src} alt={item.image.alt} width={900} height={600} />
               </div>
               <div className="carousel-content absolute top-[50%] left-[50%] translate-y-[-20%] translate-x-[-50%] text-center">
-                <Link href={item.link_btn} className="shadow-[0_0_0_1px_#ffffff] text-white font-bold px-10 py-3 hover:shadow-[0_0_0_1px_var(--color-primary)] hover:bg-[var(--color-primary)] transition-all duration-300 rounded-xs">{item.title_btn}</Link>
+                <Link href={item.link_btn} className="group flex items-center justify-center gap-2 cursor-pointer uppercase text-[12px] tracking-[3px] font-[600] rounded-full bg-transparent border border-white text-white px-8 py-5 hover:bg-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all duration-300">
+                  {item.title_btn}
+                  <ArrowRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-all duration-300" />
+                </Link>
                 <div className={`${styles.scroll_icon} mt-10 flex justify-center`}>
                   <Image className="w-[18px] h-[32px] object-contain" src="/icon/ic_scroll.webp" alt="scroll" width={20} height={20} />
                 </div>
@@ -94,6 +100,8 @@ export default function Home() {
         url="https://www.youtube.com/watch?v=dQw4w9WgXcQ" 
       />
       <HomeBlogSpecial />
+      <ContactFormTable />
+      <BlogPost title="News & Events" subtitle="Our latest news" />
       <FooterHome />
     </>
   );
