@@ -27,7 +27,7 @@ const TextBanner = ({is_icon, sub_title, title, description, button_text, button
         )}
         {button_text && (
             <div className="text-banner__button group cursor-pointer uppercase text-[12px] tracking-[3px] font-[600] rounded-full bg-transparent border border-white text-white px-8 py-5 hover:bg-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all duration-300">
-                <Link className="flex items-center gap-x-2" href={button_link}>
+                <Link className="flex items-center gap-x-1" href={button_link}>
                 {button_text} 
                 <div className="group-hover:translate-x-1 transition-all duration-300">
                     <ArrowRightIcon width={16} height={16} />

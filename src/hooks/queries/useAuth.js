@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import authApiRequest from "../api/request/auth";
+import authApiRequest from "../../api/request/auth";
 
 const useLoginMutation = () => {
     return useMutation({
@@ -13,4 +13,10 @@ const useRegisterMutation = () => {
     })
 }
 
-export { useLoginMutation, useRegisterMutation };
+const useLogoutMutation = () => {
+    return useMutation({
+        mutationFn: authApiRequest.logout,
+    })
+}
+
+export { useLoginMutation, useRegisterMutation, useLogoutMutation };

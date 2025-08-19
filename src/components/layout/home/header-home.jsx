@@ -1,18 +1,21 @@
 "use client";
-import AppSidebar from "@/src/components/app/app-sidebar";
+import AppSidebarHome from "@/src/components/app/app-sidebar-home";
 import ContainerWrapper from "@/src/components/common/container-wrapper";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuList, NavigationMenuTrigger } from "@/src/components/ui/navigation-menu";
 import { SidebarProvider, SidebarTrigger } from "@/src/components/ui/sidebar";
 import Image from "next/image";
 import Link from "next/link";
 import { home_header_menus } from "@/src/constants/menu";
-import { HeartIcon, MenuIcon, UserIcon } from "lucide-react";
+import { HeartIcon, LogOutIcon, UserIcon } from "lucide-react";
 import HeaderMenuBarIcon from "@/src/components/icon/HeaderMenuBarIcon";
 import CartDrawerIcon from "@/src/components/icon/CartDrawerIcon";
-import { Popover, PopoverContent, PopoverTrigger } from "@/src/components/ui/popover";
 import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarTrigger } from "@/src/components/ui/menubar";
 import { useEffect, useState } from "react";
 import { getAccessTokenFromLocalStorage } from "@/src/lib/utils";
+import { useRouter } from "next/navigation";
+import { useLogoutMutation } from "@/src/hooks/queries/useAuth";
+import { toast } from "sonner";
+import { useAccountProfile } from "@/src/hooks/queries/useAccount";
 const menu_bar_items_common = [
   {
     title: "Wishlist",
@@ -37,16 +40,31 @@ const menu_bar_items_auth = [
   },
   {
     title: "Profile",
-    href: "/profile",
+    href: "/manage/profile",
     authRequired: true,
     icon: UserIcon,
   },
 ]
 const HeaderHome = () => {
-  const [isAuth, setIsAuth] = useState(false);
-  useEffect(() => {
-    setIsAuth(Boolean(getAccessTokenFromLocalStorage()));
-  }, []);
+  const router = useRouter();
+  const { mutateAsync: logoutMutation, isPending } = useLogoutMutation();
+  const { data: account, refetch: refetchAccountProfile } = useAccountProfile();
+  const isAuth = account?.payload?.isAuth;
+
+  const handleLogout = async () => {
+    if (isPending) return;
+    try {
+      const { payload } = await logoutMutation({});
+      if (payload.meta.code === 200) {
+        toast.success("Logout successfully");
+        refetchAccountProfile()
+      }
+      router.push("/login")
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <>
       <ContainerWrapper className="px-4 py-3 2xl:max-w-full 2xl:px-8">
@@ -79,7 +97,7 @@ const HeaderHome = () => {
               </NavigationMenuList>
             </NavigationMenu>
             <SidebarProvider className="min-h-auto bg-transparent z-50" defaultOpen={false}>
-              <AppSidebar className="block md:hidden" position="right" />
+              <AppSidebarHome className="block md:hidden" position="right" />
               <div className="menu-bar block md:hidden">
                 <SidebarTrigger className="cursor-pointer text-white" icon={<HeaderMenuBarIcon />} />
               </div>
@@ -116,6 +134,14 @@ const HeaderHome = () => {
                         </MenubarItem>
                       )
                     })}
+                    {isAuth && (
+                      <MenubarItem>
+                        <button onClick={() => handleLogout("logout")} className="cursor-pointer flex items-center gap-2 hover:text-[var(--color-primary)] transition-all duration-300">
+                          <LogOutIcon />
+                          Logout
+                        </button>
+                      </MenubarItem>
+                    )}
                   </MenubarContent>
                 </MenubarMenu>
               </Menubar>

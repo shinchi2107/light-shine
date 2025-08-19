@@ -73,7 +73,7 @@ const removeRefreshTokenFromLocalStorage = () => {
 const checkAndRefreshToken = async (
   param
 ) => {
-  // Không nên đưa logic lấy access và refresh token ra khỏi cái function `checkAndRefreshToken`
+  // Không nên đưa logic lấy access và refresh token ra khỏi function `checkAndRefreshToken`
   // Vì để mỗi lần mà checkAndRefreshToken() được gọi thì chúng ta se có một access và refresh token mới
   // Tránh hiện tượng bug nó lấy access và refresh token cũ ở lần đầu rồi gọi cho các lần tiếp theo
   const accessToken = getAccessTokenFromLocalStorage()
@@ -111,6 +111,13 @@ const checkAndRefreshToken = async (
   }
 }
 
+const deleteCookies = (cookieStore) => {
+  if (cookieStore) {
+    cookieStore.delete("accessToken")
+    cookieStore.delete("refreshToken")
+  }
+}
+
 export { 
   getAccessTokenFromLocalStorage, 
   getRefreshTokenFromLocalStorage, 
@@ -118,7 +125,8 @@ export {
   setRefreshTokenToLocalStorage, 
   removeTokensFromLocalStorage, 
   removeRefreshTokenFromLocalStorage, 
-  checkAndRefreshToken 
+  checkAndRefreshToken,
+  deleteCookies
 }
 
 

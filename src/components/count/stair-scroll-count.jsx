@@ -1,7 +1,7 @@
 "use client"
 import { cn } from "@/src/lib/utils";
 import { analytic_data } from "@/src/constants/analytic";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "@/styles/stair-count.module.css";
 const StairScrollCount = ({ className = '' }) => {
 

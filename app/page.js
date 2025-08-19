@@ -3,10 +3,9 @@ import { CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@
 import { banner_carousel } from "@/src/constants/banner";
 import Image from "next/image";
 import Link from "next/link";
-import styles from "./ui/home.module.css";
+import styles from "@/styles/home.module.css";
 import HeaderHome from "@/src/components/layout/home/header-home";
 import FooterHome from "@/src/components/layout/home/footer-home";
-import ContainerWrapper from "@/src/components/common/container-wrapper";
 import WelcomeBanner from "@/src/components/banner/welcome-banner";
 import TextBanner from "@/src/components/banner/text-banner";
 import ImageWithTextBanner from "@/src/components/banner/image-with-text-banner";
@@ -20,7 +19,7 @@ import BlogPost from "@/src/components/blog/blog-post";
 import ArrowRightIcon from "@/src/components/icon/ArrowRightIcon";
 export default function Home() {
   return (
-    <>
+    <div className="bg-[#0e1618]">
       <HeaderHome />
       <AppCarousel className="relative">
         <CarouselContent>
@@ -103,6 +102,6 @@ export default function Home() {
       <ContactFormTable />
       <BlogPost title="News & Events" subtitle="Our latest news" />
       <FooterHome />
-    </>
+    </div>
   );
 }

@@ -9,9 +9,9 @@ import {
   SidebarMenuItem,
 } from "@/src/components/ui/sidebar";
 import { home_header_menus } from "@/src/constants/menu";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/src/components/ui/collapsible";
 import { ChevronDown } from "lucide-react";
-const AppSidebar = ({ className, position }) => {
+const AppSidebarHome = ({ className, position }) => {
     return (
         <Sidebar className={className} side={position}>
             <SidebarContent>
@@ -53,4 +53,4 @@ const AppSidebar = ({ className, position }) => {
     );
 };
 
-export default AppSidebar;
+export default AppSidebarHome;

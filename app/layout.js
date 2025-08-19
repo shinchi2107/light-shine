@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${montserrat.variable} ${baloo_2.variable}  antialiased bg-[#0e1618]`}
+        className={`${montserrat.variable} ${baloo_2.variable}  antialiased`}
       >
         <AppProvider>
           <main>

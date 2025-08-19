@@ -1,10 +1,8 @@
 import envConfig, { defaultLocale } from "@/src/configs/config";
-import Cookies from "js-cookie";
-import { getAccessTokenFromLocalStorage, normalizePath, removeTokensFromLocalStorage, setAccessTokenToLocalStorage, setRefreshTokenToLocalStorage } from "./utils";
-import { redirect } from "next/navigation";
+import { getAccessTokenFromLocalStorage, normalizePath } from "./utils";
 
-const ENTITY_ERROR_STATUS = 422
-const AUTHENTICATION_ERROR_STATUS = 401
+export const ENTITY_ERROR_STATUS = 422
+export const AUTHENTICATION_ERROR_STATUS = 401
 
 export class HttpError extends Error {
     constructor({ status, payload, message = 'HTTP Error' }) {
@@ -27,7 +25,6 @@ const isClient = typeof window !== 'undefined';
 
 
 const request = async (method, url, options) => {
-
     let body = undefined;
     if (options?.body instanceof FormData) {
         body = options.body;
@@ -72,7 +69,6 @@ const request = async (method, url, options) => {
         payload
     };
 
-
     // Interceptor
     if (!res.ok) {
         if (res.status === ENTITY_ERROR_STATUS) {
@@ -80,51 +76,27 @@ const request = async (method, url, options) => {
                 status: 422,
                 payload: data.payload
             });
-        } else if (res.status === AUTHENTICATION_ERROR_STATUS) {
-            if (isClient) {
-                const locale = Cookies.get('NEXT_LOCALE');
-                if (!clientLogoutRequest) {
-                    clientLogoutRequest = fetch('/api/auth/logout', {
-                        method: 'POST',
-                        body: null,
-                        headers: {
-                            ...baseHeaders
-                        }
-                    });
-                    try {
-                        await clientLogoutRequest;
-                    } catch (error) {
-                    } finally {
-                        removeTokensFromLocalStorage();
-                        clientLogoutRequest = null;
-                        location.href = `/${locale}/login`;
-                    }
-                }
-            } else {
-                const accessToken = (options?.headers)?.Authorization.split('Bearer ')[1];
-                const locale = Cookies.get('NEXT_LOCALE');
-            }
         } else {
             throw new HttpError(data);
         }
     }
 
-    if (isClient) {
-        const normalizeUrl = normalizePath(url);
-        if (['api/auth/login', 'api/guest/auth/login'].includes(normalizeUrl) && payload.data) {
-            const { accessToken, refreshToken } = payload.data;
-            setAccessTokenToLocalStorage(accessToken);
-            setRefreshTokenToLocalStorage(refreshToken);
-        } else if ('api/auth/token' === normalizeUrl) {
-            const { accessToken, refreshToken } = payload;
-            setAccessTokenToLocalStorage(accessToken);
-            setRefreshTokenToLocalStorage(refreshToken);
-        } else if (
-            ['api/auth/logout', 'api/guest/auth/logout'].includes(normalizeUrl)
-        ) {
-            removeTokensFromLocalStorage();
-        }
-    }
+    // if (isClient) {
+    //     const normalizeUrl = normalizePath(url);
+    //     if (['api/auth/login', 'api/guest/auth/login'].includes(normalizeUrl) && payload.data) {
+    //         const { accessToken, refreshToken } = payload.data;
+    //         setAccessTokenToLocalStorage(accessToken);
+    //         setRefreshTokenToLocalStorage(refreshToken);
+    //     } else if ('api/auth/token' === normalizeUrl) {
+    //         const { accessToken, refreshToken } = payload;
+    //         setAccessTokenToLocalStorage(accessToken);
+    //         setRefreshTokenToLocalStorage(refreshToken);
+    //     } else if (
+    //         ['api/auth/logout', 'api/guest/auth/logout'].includes(normalizeUrl)
+    //     ) {
+    //         removeTokensFromLocalStorage();
+    //     }
+    // }
 
     return data;
 };

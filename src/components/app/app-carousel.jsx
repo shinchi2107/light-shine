@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from "react";
-import { Carousel } from "../ui/carousel";
+import { Carousel } from "@/src/components/ui/carousel";
 
 const AppCarousel = ({children, ...props}) => {
     const [api, setApi] = useState();

@@ -7,7 +7,7 @@ import { Label } from "@/src/components/ui/label"
 import { RegisterBodySchema } from "@/src/schemaValidations/auth.schema"
 import { useForm } from "react-hook-form"
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRegisterMutation } from "@/src/queries/useAuth"
+import { useRegisterMutation } from "@/src/hooks/queries/useAuth"
 import { toast } from "sonner"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -30,20 +30,17 @@ export default function RegisterForm() {
         if (isPending) return;
         try {
             const { payload } = await registerMutation(data)
-            if (payload.meta.code === 401) {
-                toast.error("Email or password is incorrect", {
-                    position: "top-right",
-                    duration: 3000,
-                })
-            } else {
-                toast.success('Register successful', {
-                    position: "top-right",
-                    duration: 3000,
-                })
-            }
+            toast.success('Register successful', {
+                position: "top-right",
+                duration: 2000,
+            })
             router.push('/')
         } catch (error) {
-            console.log(error)
+            console.log(error?.payload)
+            if (error?.payload?.error) {
+                const { errors } = error.payload.error;
+                toast.error(errors.message);
+            }
         }
     }
 

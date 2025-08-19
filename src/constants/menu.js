@@ -1,4 +1,5 @@
-import { Facebook, Instagram, Mail, MapPin, Phone, Twitter, Youtube } from "lucide-react";
+import { IconCategory, IconChefHat, IconHelp, IconSearch, IconSettings, IconShoppingCart, IconUsers } from "@tabler/icons-react";
+import { Facebook, Folder, Home, Instagram, Mail, MapPin, Phone, Twitter, Youtube } from "lucide-react";
 
 const home_header_menus = [
     {
@@ -191,9 +192,56 @@ const home_footer_menus = [
             {
                 title: "Maintenance & Warranty",
                 href: "/",
-            }   
+            }
         ]
     }
 ]
 
-export { home_header_menus, home_footer_menus };
+const manage_menus = {
+    navMain: [
+        {
+            title: "Dashboard",
+            href: "/manage",
+            icon: Home
+        },
+        {
+            title: "Accounts",
+            href: "/manage/accounts",
+            icon: IconUsers
+        },
+        {
+            title: "Dishes",
+            href: "/manage/dishes",
+            icon: IconChefHat
+        },
+        {
+            title: "Categories",
+            href: "/manage/categories",
+            icon: IconCategory
+        },
+        {
+            title: "Orders",
+            href: "/manage/orders",
+            icon: IconShoppingCart
+        }
+    ],
+    navSecondary: [
+        {
+            title: "Settings",
+            url: "/manage/setting",
+            icon: IconSettings,
+        },
+        {
+            title: "Get Help",
+            url: "#",
+            icon: IconHelp,
+        },
+        {
+            title: "Search",
+            url: "#",
+            icon: IconSearch,
+        },
+    ]
+}
+
+export { home_header_menus, home_footer_menus, manage_menus };

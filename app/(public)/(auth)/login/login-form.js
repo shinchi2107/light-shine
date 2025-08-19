@@ -7,13 +7,17 @@ import { Label } from "@/src/components/ui/label"
 import { LoginBodySchema } from "@/src/schemaValidations/auth.schema"
 import { useForm } from "react-hook-form"
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useLoginMutation } from "@/src/queries/useAuth"
+import { useLoginMutation } from "@/src/hooks/queries/useAuth"
 import { toast } from "sonner"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useAccountProfile } from "@/src/hooks/queries/useAccount"
 
 
 export default function LoginForm() {
+  const router = useRouter()
   const { mutateAsync: loginMutation, isPending } = useLoginMutation();
+  const { refetch: refetchAccountProfile } = useAccountProfile();
   const form = useForm({
     resolver: zodResolver(LoginBodySchema),
     defaultValues: {
@@ -29,13 +33,15 @@ export default function LoginForm() {
       if(payload.meta.code === 401) {
         toast.error("Email or password is incorrect", {
             position: "top-right",
-            duration: 3000,
+            duration: 2000,
         })
       } else {
         toast.success('Login successful', {
             position: "top-right",
-            duration: 3000,
+            duration: 1500,
         })
+        refetchAccountProfile()
+        router.push('/')
       }
     } catch (error) {
       console.log(error)
