@@ -13,6 +13,10 @@ const authApiRequest = {
    logout: async (body) => https.post('/api/auth/logout', body, {
     baseUrl: ''
    }),
+   sRefreshToken: async (body) => https.post('/auth/refresh-token', body),
+   refreshToken: async (params) => https.get('/api/auth/refresh-token' + (params?.force ? '?force=true' : ''), {
+    baseUrl: '',
+   }),
 }
 
 export default authApiRequest;

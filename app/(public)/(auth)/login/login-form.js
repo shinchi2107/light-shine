@@ -11,13 +11,12 @@ import { useLoginMutation } from "@/src/hooks/queries/useAuth"
 import { toast } from "sonner"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useAccountProfile } from "@/src/hooks/queries/useAccount"
-
+import { useAuthStore } from "@/src/store/auth.store"
 
 export default function LoginForm() {
   const router = useRouter()
   const { mutateAsync: loginMutation, isPending } = useLoginMutation();
-  const { refetch: refetchAccountProfile } = useAccountProfile();
+  const { setAccessToken, setRefreshToken } = useAuthStore();
   const form = useForm({
     resolver: zodResolver(LoginBodySchema),
     defaultValues: {
@@ -40,7 +39,8 @@ export default function LoginForm() {
             position: "top-right",
             duration: 1500,
         })
-        refetchAccountProfile()
+        setAccessToken(payload.data.accessToken)
+        setRefreshToken(payload.data.refreshToken)
         router.push('/')
       }
     } catch (error) {

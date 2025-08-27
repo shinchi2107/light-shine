@@ -19,4 +19,5 @@ const useLogoutMutation = () => {
     })
 }
 
-export { useLoginMutation, useRegisterMutation, useLogoutMutation };
+
+export { useLoginMutation, useRegisterMutation, useLogoutMutation, useRefreshTokenMutation };

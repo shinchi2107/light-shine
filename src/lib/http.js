@@ -20,7 +20,6 @@ export class EntityError extends HttpError {
     }
 }
 
-let clientLogoutRequest = null;
 const isClient = typeof window !== 'undefined';
 
 
@@ -50,7 +49,6 @@ const request = async (method, url, options) => {
         options?.baseUrl === undefined
             ? envConfig.NEXT_PUBLIC_API_ENDPOINT
             : options.baseUrl;
-
     const fullUrl = `${baseUrl}/${normalizePath(url)}`;
     const res = await fetch(fullUrl, {
         ...options,
@@ -80,23 +78,6 @@ const request = async (method, url, options) => {
             throw new HttpError(data);
         }
     }
-
-    // if (isClient) {
-    //     const normalizeUrl = normalizePath(url);
-    //     if (['api/auth/login', 'api/guest/auth/login'].includes(normalizeUrl) && payload.data) {
-    //         const { accessToken, refreshToken } = payload.data;
-    //         setAccessTokenToLocalStorage(accessToken);
-    //         setRefreshTokenToLocalStorage(refreshToken);
-    //     } else if ('api/auth/token' === normalizeUrl) {
-    //         const { accessToken, refreshToken } = payload;
-    //         setAccessTokenToLocalStorage(accessToken);
-    //         setRefreshTokenToLocalStorage(refreshToken);
-    //     } else if (
-    //         ['api/auth/logout', 'api/guest/auth/logout'].includes(normalizeUrl)
-    //     ) {
-    //         removeTokensFromLocalStorage();
-    //     }
-    // }
 
     return data;
 };

@@ -11,10 +11,11 @@ import { useRegisterMutation } from "@/src/hooks/queries/useAuth"
 import { toast } from "sonner"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-
+import { useAuthStore } from "@/src/store/auth.store"
 
 export default function RegisterForm() {
     const { mutateAsync: registerMutation, isPending } = useRegisterMutation();
+    const { setAccessToken, setRefreshToken } = useAuthStore();
     const router = useRouter();
     const form = useForm({
         resolver: zodResolver(RegisterBodySchema),
@@ -34,9 +35,10 @@ export default function RegisterForm() {
                 position: "top-right",
                 duration: 2000,
             })
+            setAccessToken(payload.data.accessToken)
+            setRefreshToken(payload.data.refreshToken)
             router.push('/')
         } catch (error) {
-            console.log(error?.payload)
             if (error?.payload?.error) {
                 const { errors } = error.payload.error;
                 toast.error(errors.message);

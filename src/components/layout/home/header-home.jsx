@@ -9,13 +9,11 @@ import { home_header_menus } from "@/src/constants/menu";
 import { HeartIcon, LogOutIcon, UserIcon } from "lucide-react";
 import HeaderMenuBarIcon from "@/src/components/icon/HeaderMenuBarIcon";
 import CartDrawerIcon from "@/src/components/icon/CartDrawerIcon";
-import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarTrigger } from "@/src/components/ui/menubar";
-import { useEffect, useState } from "react";
-import { getAccessTokenFromLocalStorage } from "@/src/lib/utils";
+import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from "@/src/components/ui/menubar";
 import { useRouter } from "next/navigation";
 import { useLogoutMutation } from "@/src/hooks/queries/useAuth";
 import { toast } from "sonner";
-import { useAccountProfile } from "@/src/hooks/queries/useAccount";
+import { useAuthStore } from "@/src/store/auth.store";
 const menu_bar_items_common = [
   {
     title: "Wishlist",
@@ -48,8 +46,8 @@ const menu_bar_items_auth = [
 const HeaderHome = () => {
   const router = useRouter();
   const { mutateAsync: logoutMutation, isPending } = useLogoutMutation();
-  const { data: account, refetch: refetchAccountProfile } = useAccountProfile();
-  const isAuth = account?.payload?.isAuth;
+  const { clearAuth, accessToken } = useAuthStore();
+  const isAuth = !!accessToken;
 
   const handleLogout = async () => {
     if (isPending) return;
@@ -57,7 +55,7 @@ const HeaderHome = () => {
       const { payload } = await logoutMutation({});
       if (payload.meta.code === 200) {
         toast.success("Logout successfully");
-        refetchAccountProfile()
+        clearAuth()
       }
       router.push("/login")
     } catch (error) {
