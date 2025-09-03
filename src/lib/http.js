@@ -22,6 +22,23 @@ export class EntityError extends HttpError {
 
 const isClient = typeof window !== 'undefined';
 
+const buildQueryString = (params) => {
+    if (!params || Object.keys(params).length === 0) return '';
+
+    const searchParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+        if (value !== null && value !== undefined) {
+            if (Array.isArray(value)) {
+                value.forEach(item => searchParams.append(key, item));
+            } else {
+                searchParams.append(key, value);
+            }
+        }
+    });
+
+    return searchParams.toString();
+};
+
 
 const request = async (method, url, options) => {
     let body = undefined;
@@ -30,6 +47,8 @@ const request = async (method, url, options) => {
     } else if (options?.body) {
         body = JSON.stringify(options.body);
     }
+
+    
 
     const baseHeaders =
         body instanceof FormData
@@ -49,7 +68,14 @@ const request = async (method, url, options) => {
         options?.baseUrl === undefined
             ? envConfig.NEXT_PUBLIC_API_ENDPOINT
             : options.baseUrl;
-    const fullUrl = `${baseUrl}/${normalizePath(url)}`;
+    let fullUrl = `${baseUrl}/${normalizePath(url)}`;
+
+    if(options?.params) {
+        const queryString = buildQueryString(options.params);
+        if (queryString) {
+            fullUrl += (url.includes('?') ? '&' : '?') + queryString;
+        }
+    }
     const res = await fetch(fullUrl, {
         ...options,
         headers: {

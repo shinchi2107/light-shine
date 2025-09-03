@@ -17,9 +17,10 @@ import { toast } from "sonner";
 const UpdateProfileForm = () => {
     const [file, setFile] = useState(null);
     const avatarInputRef = useRef(null);
+    const [isLoading, setIsLoading] = useState(false);
     const { data: account, refetch: refetchAccountProfile } = useAccountProfile();
-    const { mutateAsync: uploadAvatar, isPending: isUploadingAvatar } = useMediaUploadAvatar();
-    const { mutateAsync: updateAccountProfile, isPending: isUpdatingAccountProfile } = useUpdateAccountProfile();
+    const { mutateAsync: uploadAvatar } = useMediaUploadAvatar();
+    const { mutateAsync: updateAccountProfile } = useUpdateAccountProfile();
     const form = useForm({
         resolver: zodResolver(AccountUpdateBodySchema),
         defaultValues: {
@@ -53,43 +54,46 @@ const UpdateProfileForm = () => {
     }
 
     const onSubmit = async (data) => {
+        setIsLoading(true);
         try {
             let dataUpdate = {
                 name: data.name,
             };
-        if (data.avatar instanceof File) {
-            let oldFileName = '';
-            if (account?.payload?.data?.avatar) {
-                oldFileName = account?.payload?.data?.avatar.split("/").pop().split(".")[0];
-            }
-            if (data.avatar.name !== oldFileName) {
-                const formData = new FormData();
-                formData.append("avatar", data.avatar);
-                const { status, payload } = await uploadAvatar(formData);
-                if (status === 200) {
-                    dataUpdate.avatar = payload.data.url;
+            if (data.avatar instanceof File) {
+                let oldFileName = '';
+                if (account?.payload?.data?.avatar) {
+                    oldFileName = account?.payload?.data?.avatar.split("/").pop().split(".")[0];
+                }
+                if (data.avatar.name !== oldFileName) {
+                    const formData = new FormData();
+                    formData.append("avatar", data.avatar);
+                    const { status, payload } = await uploadAvatar(formData);
+                    if (status === 200) {
+                        dataUpdate.avatar = payload.data.url;
+                    }
                 }
             }
-        }
 
-        const { status } = await updateAccountProfile(dataUpdate);
-        if (status === 200) {
-            refetchAccountProfile();
-            toast.success("Update profile successfully", {
-                position: "bottom-right",
+            const { status } = await updateAccountProfile(dataUpdate);
+            if (status === 200) {
+                refetchAccountProfile();
+                toast.success("Update profile successfully", {
+                    position: "bottom-right",
                     duration: 1500,
                 });
             }
         } catch (error) {
             console.log(error);
+        } finally {
+            setIsLoading(false);
         }
     }
 
     return (
         <Form {...form}>
             <form noValidate onReset={resetForm} onSubmit={form.handleSubmit(onSubmit, (errors) => {
-            console.warn(errors)
-          })}>
+                console.warn(errors)
+            })}>
                 <Card>
                     <CardHeader>
                         <CardTitle>Update Profile</CardTitle>
@@ -134,7 +138,7 @@ const UpdateProfileForm = () => {
                                 render={({ field }) => (
                                     <FormItem>
                                         <div className='grid gap-3'>
-                                            <Label htmlFor='name'>Tên</Label>
+                                            <Label htmlFor='name'>Name</Label>
                                             <Input id='name' type='text' className='w-full' {...field} />
                                             <FormMessage />
                                         </div>
@@ -149,8 +153,8 @@ const UpdateProfileForm = () => {
                             <Button variant='outline' size='sm' type='reset' disabled={!form.formState.isDirty}>
                                 Cancel
                             </Button>
-                            <Button size='sm' type='submit' disabled={isUploadingAvatar || isUpdatingAccountProfile || !form.formState.isDirty}>
-                                {isUploadingAvatar || isUpdatingAccountProfile ? <Loader2Icon className="animate-spin" /> : "Save"}
+                            <Button size='sm' type='submit' disabled={isLoading || !form.formState.isDirty}>
+                                {isLoading ? <Loader2Icon className="animate-spin" /> : "Save"}
                             </Button>
                         </div>
                     </CardFooter>

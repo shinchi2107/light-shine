@@ -1,7 +1,9 @@
+import AccountTable from "./account-table";
+
 const AccountPage = () => {
   return (
     <div>
-      AccountPage
+      <AccountTable />
     </div>
   )
 }

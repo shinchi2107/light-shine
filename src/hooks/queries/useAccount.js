@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from "@tanstack/react-query"
+import { useQuery, useMutation, keepPreviousData } from "@tanstack/react-query"
 import accountApiRequest from "@/src/api/request/account"
 const useAccountProfile = () => {
     return useQuery({
@@ -20,4 +20,20 @@ const useUpdateAccountPassword = () => {
     })
 }
 
-export { useAccountProfile, useUpdateAccountProfile, useUpdateAccountPassword }
+const useGetAllAccounts = ({ page = 1, limit = 10, search = "" }) => {
+    const params = { page, limit, search };
+    return useQuery({
+        queryKey: ["accounts", page, limit, search],
+        queryFn: ({ signal }) => accountApiRequest.getAllAccounts({ params, signal }),
+        placeholderData: keepPreviousData,
+        staleTime: 1000 * 60 * 5, // cache 5 minutes
+    })
+}
+
+const useCreateAccount = () => {
+    return useMutation({
+        mutationFn: accountApiRequest.createAccount,
+    })
+}
+
+export { useAccountProfile, useUpdateAccountProfile, useUpdateAccountPassword, useGetAllAccounts, useCreateAccount }
