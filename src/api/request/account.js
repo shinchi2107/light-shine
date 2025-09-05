@@ -23,6 +23,10 @@ const accountApiRequest = {
     createAccount: async (body) => https.post('/api/account/create-account', body, {
         baseUrl: '',
     }),
+    sFindAccountById: async (options, id) => https.get(`/account/${id}`, options),
+    findAccountById: async ({ id }) => https.get(`/api/account/${id}`, {
+        baseUrl: '',
+    }),
 }
 
 export default accountApiRequest;

@@ -30,10 +30,26 @@ const useGetAllAccounts = ({ page = 1, limit = 10, search = "" }) => {
     })
 }
 
+const useFindAccountById = ({ id }) => {
+    return useQuery({
+        queryKey: ["account", id],
+        queryFn: () => accountApiRequest.findAccountById({ id }),
+        staleTime: 1000 * 60 * 10, // cache 10 minutes
+        enabled: Boolean(id),
+    })
+}
+
 const useCreateAccount = () => {
     return useMutation({
         mutationFn: accountApiRequest.createAccount,
     })
 }
 
-export { useAccountProfile, useUpdateAccountProfile, useUpdateAccountPassword, useGetAllAccounts, useCreateAccount }
+export { 
+    useAccountProfile, 
+    useUpdateAccountProfile, 
+    useUpdateAccountPassword, 
+    useGetAllAccounts, 
+    useCreateAccount,
+    useFindAccountById
+}

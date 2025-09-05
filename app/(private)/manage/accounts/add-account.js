@@ -8,13 +8,22 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AccountCreateBodySchema } from "@/src/schemaValidations/account.schema";
 import { useMemo, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
-import { Upload } from "lucide-react";
+import { Loader2Icon, Upload } from "lucide-react";
 import { Label } from "@/src/components/ui/label";
 import { Input } from "@/src/components/ui/input";
-import { useCreateAccount } from "@/src/hooks/queries/useAccount";
+import { useCreateAccount, useGetAllAccounts } from "@/src/hooks/queries/useAccount";
+import { useMediaUploadAvatar } from "@/src/hooks/queries/useMedia";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+
+const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
+
 const AddAccount = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const { mutate: createAccount, isPending: isCreatingAccount } = useCreateAccount();
+    const { refetch: refetchAccountProfile } = useGetAllAccounts({ page: 1, limit: 2, search: "" });
+    const router = useRouter();
+    const [open, setOpen] = useState(false);
+    const { mutateAsync: createAccount } = useCreateAccount();
     const { mutateAsync: uploadAvatar } = useMediaUploadAvatar();
     const [file, setFile] = useState(null);
     const avatarInputRef = useRef(null);
@@ -43,7 +52,6 @@ const AddAccount = () => {
     const onSubmit = async (data) => {
         try {
             setIsLoading(true);
-            console.log(data);
             let dataUpdate = {
                 ...data
             };
@@ -55,15 +63,35 @@ const AddAccount = () => {
                     dataUpdate.avatar = payload.data.url;
                 }
             }
+            const { status } = await createAccount(dataUpdate);
+            if (status === 200) {
+                const params = new URLSearchParams();
+                params.set("page", "1");
+                params.delete("search");
+                router.replace(`?${params.toString()}`);
+                refetchAccountProfile();
+                toast.success("Create account successfully", {
+                    position: "bottom-right",
+                    duration: 1500,
+                });
+                
+                wait().then(() => {
+                    setOpen(false);
+                });
+            }
         } catch (error) {
-            console.log(error);
+            if (error?.payload?.error) {
+                const { errors } = error.payload.error;
+                console.log(JSON.stringify(errors));
+                toast.error(errors.message);
+            }
         } finally {
             setIsLoading(false);
         }
 
     }
 
-    return <Dialog >
+    return <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
             <Button className="cursor-pointer" size="sm">Create Account</Button>
         </DialogTrigger>

@@ -33,6 +33,10 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/src/components/ui/avatar"
 import { useGetAllAccounts } from "@/src/hooks/queries/useAccount"
 import { useSearchParams, useRouter } from "next/navigation"
 import AddAccount from "./add-account"
+import { Badge } from "@/src/components/ui/badge"
+import EditAccount from "./edit-account"
+import { useAccountStore } from "@/src/store/account.store"
+
 
 export const columns = [
   {
@@ -102,28 +106,40 @@ export const columns = [
     cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
   },
   {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => ( <div className="capitalize">{row.getValue("status") === "active" ? (
+      <Badge variant="default">{row.getValue("status")}</Badge>
+    ) : (
+      <Badge variant="destructive">{row.getValue("status")}</Badge>
+    )}</div>),
+  },
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original
+      const account = row.original
+      const { setAccountId } = useAccountStore();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
               <span className="sr-only">Open menu</span>
               <MoreHorizontal />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+            <DropdownMenuItem className="cursor-pointer"
+              onClick={() => navigator.clipboard.writeText(account._id)}
             >
-              Copy payment ID
+              Copy account ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer" onClick={() => {
+              setAccountId(account._id)}
+            }>Edit Account</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">Deactivate Account</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -142,7 +158,8 @@ const AccountTable = () => {
   const [rowSelection, setRowSelection] = useState({})
   const [page, setPage] = useState(pageFromUrl);
   const [search, setSearch] = useState(searchFromUrl);
-  const { data: accounts, isLoading, isError } = useGetAllAccounts({ page, limit: 1, search });
+  const { data: accounts } = useGetAllAccounts({ page, limit: 2, search });
+  const { accountId, setAccountId } = useAccountStore();
 
   const meta = {
     page: accounts?.payload?.data?.page,
@@ -157,7 +174,7 @@ const AccountTable = () => {
       params.set("page", page.toString());
       if (search) params.set("search", search);
       router.replace(`?${params.toString()}`);
-  }, [page, search, router]);
+  }, [page, search]);
 
   const table = useReactTable({
     data: accounts?.payload?.data?.accounts ?? [],
@@ -192,6 +209,7 @@ const AccountTable = () => {
 
   return (
     <div className="w-full">
+      {accountId && <EditAccount id={accountId} setId={setAccountId} />}
       <div className="flex items-center py-4">
         <Input
           placeholder="Filter emails..."
@@ -202,7 +220,7 @@ const AccountTable = () => {
         <div className="flex items-center gap-2 ml-auto">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="cursor-pointer">
                 Columns <ChevronDown />
             </Button>
           </DropdownMenuTrigger>
