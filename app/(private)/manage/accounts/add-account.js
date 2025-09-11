@@ -20,7 +20,7 @@ const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
 const AddAccount = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const { refetch: refetchAccountProfile } = useGetAllAccounts({ page: 1, limit: 2, search: "" });
+    const { refetch: refetchAllAccounts } = useGetAllAccounts({ page: 1, limit: 2, search: "" });
     const router = useRouter();
     const [open, setOpen] = useState(false);
     const { mutateAsync: createAccount } = useCreateAccount();
@@ -69,7 +69,7 @@ const AddAccount = () => {
                 params.set("page", "1");
                 params.delete("search");
                 router.replace(`?${params.toString()}`);
-                refetchAccountProfile();
+                refetchAllAccounts();
                 toast.success("Create account successfully", {
                     position: "bottom-right",
                     duration: 1500,

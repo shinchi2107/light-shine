@@ -24,7 +24,6 @@ export async function GET(request) {
             return NextResponse.redirect(new URL("/login", request.url));
         }
         const { payload } = await authApiRequest.sRefreshToken({ token: refreshToken });
-        console.log(payload);
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } = payload.data;
         const decodedAccessToken = jwt.decode(newAccessToken);
         const decodedRefreshToken = jwt.decode(newRefreshToken);

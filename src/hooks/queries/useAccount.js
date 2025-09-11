@@ -45,11 +45,18 @@ const useCreateAccount = () => {
     })
 }
 
+const useUpdateAccountById = ({ id }) => {
+    return useMutation({
+        mutationFn:(data) => accountApiRequest.updateAccountById({ id, body: data }),
+    })
+}
+
 export { 
     useAccountProfile, 
     useUpdateAccountProfile, 
     useUpdateAccountPassword, 
     useGetAllAccounts, 
     useCreateAccount,
-    useFindAccountById
+    useFindAccountById,
+    useUpdateAccountById
 }

@@ -1,25 +1,24 @@
 "use client";
 
 import { Button } from "@/src/components/ui/button";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/src/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/src/components/ui/form";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/src/components/ui/dialog";
+import { Form, FormField, FormItem, FormMessage } from "@/src/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AccountManageUpdateBodySchema } from "@/src/schemaValidations/account.schema";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { Loader2Icon, Upload } from "lucide-react";
 import { Label } from "@/src/components/ui/label";
 import { Input } from "@/src/components/ui/input";
-import { useFindAccountById, useGetAllAccounts, useUpdateAccountById } from "@/src/hooks/queries/useAccount";
+import { useFindCategoryById, useGetAllCategories, useUpdateCategoryById } from "@/src/hooks/queries/useCategory";
 import { useMediaUploadAvatar } from "@/src/hooks/queries/useMedia";
 import { toast } from "sonner";
 import { useSearchParams } from "next/navigation";
-import { Switch } from "@/src/components/ui/switch";
+import { CategoryUpdateBodySchema } from "@/src/schemaValidations/category.schema";
 
 const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
-const EditAccount = ({
+const EditCategory = ({
   id,
   setId
 }) => {
@@ -27,66 +26,62 @@ const EditAccount = ({
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page") ?? 1);
   const search = searchParams.get("search") ?? "";
-  const { refetch: refetchAllAccounts } = useGetAllAccounts({ page, limit: 2, search });
-  const { mutateAsync: updateAccountById } = useUpdateAccountById({ id });
+  const { refetch: refetchAllCategories } = useGetAllCategories({ page, limit: 2, search });
+  const { mutateAsync: updateCategoryById } = useUpdateCategoryById({ id });
   const { mutateAsync: uploadAvatar } = useMediaUploadAvatar();
-  const { data: account, refetch: refetchAccount } = useFindAccountById({ id });
+  const { data: category, refetch: refetchCategory } = useFindCategoryById({ id });
   const [file, setFile] = useState(null);
-  const avatarInputRef = useRef(null);
+  const imageInputRef = useRef(null);
   const form = useForm({
-    resolver: zodResolver(AccountManageUpdateBodySchema),
+    resolver: zodResolver(CategoryUpdateBodySchema),
     defaultValues: {
       name: '',
-      email: '',
-      avatar: undefined,
-      isChangePassword: false,
-      password: '',
-      confirmPassword: ''
+      description: '',
+      image: '',
     }
   })
 
   useEffect(() => {
-    if (account) {
-      const { name, avatar, email } = account.payload.data;
+    if (category) {
+      const { name, image, description } = category.payload.data;
       form.reset({
         name,
-        avatar: avatar ?? undefined,
-        email,
+        image: image ?? '',
+        description,
       });
     }
-  }, [account]);
+  }, [category]);
 
-  const avatar = form.watch('avatar');
-  const isChangePassword = form.watch('isChangePassword');
+  const image = form.watch('image');
 
-  const previewAvatar = useMemo(() => {
+  const previewImage = useMemo(() => {
     if (file) {
       return URL.createObjectURL(file);
     }
-    return avatar;
-  }, [file, avatar]);
+    return image;
+  }, [file, image]);
 
 
 
-  const onSubmit = async ({confirmPassword, ...data}) => {
+  const onSubmit = async (data) => {
     try {
       setIsLoading(true);
       let dataUpdate = {
         ...data
       };
-      if (data.avatar instanceof File) {
+      if (data.image instanceof File) {
         const formData = new FormData();
-        formData.append("avatar", data.avatar);
+        formData.append("avatar", data.image);
         const { status, payload } = await uploadAvatar(formData);
         if (status === 200) {
-          dataUpdate.avatar = payload.data.url;
+          dataUpdate.image = payload.data.url;
         }
       }
-      const { status } = await updateAccountById(dataUpdate);
+      const { status } = await updateCategoryById(dataUpdate);
       if (status === 200) {            
-        refetchAllAccounts();
-        refetchAccount();
-        toast.success("Create account successfully", {
+        refetchAllCategories();
+        refetchCategory();
+        toast.success("Update category successfully", {
           position: "bottom-right",
           duration: 1500,
         });
@@ -117,9 +112,9 @@ const EditAccount = ({
 
     <DialogContent className="max-w-3xl">
       <DialogHeader>
-        <DialogTitle>Edit Account</DialogTitle>
+        <DialogTitle>Edit Category</DialogTitle>
         <DialogDescription>
-          Name, email, and password are required.
+          Name is required.
         </DialogDescription>
       </DialogHeader>
       <Form {...form}>
@@ -129,15 +124,15 @@ const EditAccount = ({
           <div className='grid gap-6 mb-6'>
             <FormField
               control={form.control}
-              name='avatar'
+              name='image'
               render={({ field }) => (
                 <FormItem>
                   <div className='flex gap-2 items-start justify-start'>
                     <Avatar className='aspect-square w-[100px] h-[100px] rounded-md object-cover'>
-                      <AvatarImage src={previewAvatar} />
+                      <AvatarImage src={previewImage} />
                       <AvatarFallback className='rounded-none'>Upload</AvatarFallback>
                     </Avatar>
-                    <input ref={avatarInputRef} type='file' accept='image/*' className='hidden' onChange={(e) => {
+                    <input ref={imageInputRef} type='file' accept='image/*' className='hidden' onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (file) {
                         setFile(file);
@@ -145,10 +140,10 @@ const EditAccount = ({
                       }
                     }} />
                     <button
-                      htmlFor='avatar'
+                      htmlFor='image'
                       className='flex aspect-square w-[100px] items-center justify-center rounded-md border border-dashed'
                       type='button'
-                      onClick={() => avatarInputRef.current.click()}
+                      onClick={() => imageInputRef.current.click()}
                     >
                       <Upload className='h-4 w-4 text-muted-foreground' />
                       <span className='sr-only'>Upload</span>
@@ -172,67 +167,17 @@ const EditAccount = ({
             />
             <FormField
               control={form.control}
-              name='email'
+              name='description'
               render={({ field }) => (
                 <FormItem>
                   <div className='grid gap-3'>
-                    <Label htmlFor='email'>Email</Label>
-                    <Input id='email' type='email' className='w-full' {...field} />
+                    <Label htmlFor='description'>Description</Label>
+                    <Input id='description' type='text' className='w-full' {...field} />
                     <FormMessage />
                   </div>
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name='isChangePassword'
-              render={({ field }) => (
-                <FormItem>
-                  <div className='flex gap-3 items-center justify-start'>
-                    <FormControl>
-                      <Switch
-                        className='cursor-pointer'
-                        id='isChangePassword'
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <Label htmlFor='isChangePassword' className='cursor-pointer'>Change Password</Label>
-                  </div>
-                </FormItem>
-              )}
-            />
-            {isChangePassword && (
-              <>
-                <FormField
-                  control={form.control}
-                  name='password'
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className='grid gap-3'>
-                        <Label htmlFor='password'>Password</Label>
-                        <Input id='password' type='password' className='w-full' {...field} />
-                        <FormMessage />
-                      </div>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name='confirmPassword'
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className='grid gap-3'>
-                        <Label htmlFor='confirmPassword'>Confirm Password</Label>
-                        <Input id='confirmPassword' type='password' className='w-full' {...field} />
-                        <FormMessage />
-                      </div>
-                    </FormItem>
-                  )}
-                />
-              </>
-            )}
-
           </div>
           <DialogFooter>
             <DialogClose asChild>
@@ -248,4 +193,4 @@ const EditAccount = ({
   </Dialog>;
 };
 
-export default EditAccount;
+export default EditCategory;

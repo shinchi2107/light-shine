@@ -27,6 +27,10 @@ const accountApiRequest = {
     findAccountById: async ({ id }) => https.get(`/api/account/${id}`, {
         baseUrl: '',
     }),
+    sUpdateAccountById: async (options, id, body) => https.put(`/account/${id}`, body, options),
+    updateAccountById: async ({ id, body }) => https.put(`/api/account/${id}`, body, {
+        baseUrl: '',
+    }),
 }
 
 export default accountApiRequest;

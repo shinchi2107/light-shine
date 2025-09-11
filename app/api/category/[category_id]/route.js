@@ -1,20 +1,20 @@
 import { NextResponse } from "next/server";
-import accountApiRequest from "@/src/api/request/account";
+import categoryApiRequest from "@/src/api/request/category";
 import { cookies } from "next/headers";
 import { AUTHENTICATION_ERROR_STATUS, HttpError } from "@/src/lib/http";
 import { deleteCookies } from "@/src/lib/utils";
 
 export async function GET(request, ctx) {
     const cookieStore = await cookies();
-    const { account_id } = await ctx.params;
+    const { category_id } = await ctx.params;
     try {
         const accessToken = cookieStore.get("accessToken")?.value;
         if (!accessToken) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
-        const { payload } = await accountApiRequest.sFindAccountById({
+        const { payload } = await categoryApiRequest.sFindCategoryById({
             headers: { Authorization: `Bearer ${accessToken}` }
-        }, account_id);
+        }, category_id);
         return NextResponse.json(payload);
     } catch (error) {
         if (error.status == AUTHENTICATION_ERROR_STATUS) {
@@ -31,15 +31,15 @@ export async function GET(request, ctx) {
 export async function PUT(request, ctx) {
     const body = await request.json();
     const cookieStore = await cookies();
-    const { account_id } = await ctx.params;
+    const { category_id } = await ctx.params;
     try {
         const accessToken = cookieStore.get("accessToken")?.value;
         if (!accessToken) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
-        const { payload } = await accountApiRequest.sUpdateAccountById({
+        const { payload } = await categoryApiRequest.sUpdateCategoryById({
             headers: { Authorization: `Bearer ${accessToken}` }
-        }, account_id, body);
+        }, category_id, body);
         return NextResponse.json(payload);
     } catch (error) {
         if (error.status == AUTHENTICATION_ERROR_STATUS) {
